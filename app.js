@@ -11,6 +11,7 @@ const providerDetect= $('providerDetect');
 const parseProgress = $('parseProgress');
 const parseLabel    = $('parseLabel');
 const parseBarFill  = $('parseBarFill');
+const parsePct      = $('parsePct');
 
 let parsedSNPs = {}, detectedProviderName = '', totalSNPCount = 0;
 
@@ -151,6 +152,7 @@ function runWorker(buffer, filename) {
                 case 'progress':
                     parseLabel.textContent   = data.label;
                     parseBarFill.style.width = data.pct + '%';
+                    if (parsePct) parsePct.textContent = Math.round(data.pct) + '%';
                     break;
 
                 case 'provider':
