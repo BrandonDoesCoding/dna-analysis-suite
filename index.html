@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA Analysis Suite — Phenotype & Genetic Health Reports</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <span class="brand-icon">&#x1F9EC;</span>
+                <span class="brand-text">DNA Analysis Suite</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-tab="upload">Upload</a>
+                <a href="#" class="nav-link" data-tab="phenotype" id="navPhenotype" style="display:none;">Phenotype</a>
+                <a href="#" class="nav-link" data-tab="health" id="navHealth" style="display:none;">Genetics &amp; Health</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Upload Panel -->
+    <section class="panel" id="panelUpload">
+        <div class="container">
+            <div class="upload-hero">
+                <h1>DNA Analysis Suite</h1>
+                <p class="upload-hero-sub">Upload your RAW DNA file and get instant phenotype predictions, haplogroup detection, and an in-depth genetic health analysis across 200+ SNPs. <strong>100% client-side</strong> &mdash; your DNA never leaves your browser.</p>
+            </div>
+
+            <div class="upload-card">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-pulse"></div>
+                    <div class="upload-icon-wrap">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <h3>Drop your DNA file here</h3>
+                    <p>or click to browse</p>
+                    <input type="file" id="fileInput" accept=".txt,.csv,.zip,.gz,.raw,.tsv" hidden>
+                    <div class="upload-formats">
+                        Supports: .zip, .txt, .csv, .raw, .tsv, .gz &mdash; from any major provider
+                    </div>
+                </div>
+
+                <!-- File loaded state -->
+                <div class="file-loaded" id="fileLoaded" style="display:none;">
+                    <div class="file-loaded-icon">&#x2705;</div>
+                    <div class="file-loaded-info">
+                        <span class="file-loaded-name" id="loadedFileName"></span>
+                        <span class="file-loaded-meta" id="loadedFileMeta"></span>
+                    </div>
+                    <button class="btn-icon" id="removeFile" title="Remove file">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+
+                <!-- Provider detection -->
+                <div class="provider-detect" id="providerDetect" style="display:none;">
+                    <div class="provider-chip" id="providerChip">
+                        <span class="provider-chip-icon" id="providerIcon">MH</span>
+                        <span id="providerLabel">MyHeritage</span>
+                    </div>
+                    <span class="provider-snp-count" id="snpCount"></span>
+                </div>
+
+                <!-- Loading bar -->
+                <div class="parse-progress" id="parseProgress" style="display:none;">
+                    <div class="parse-progress-label" id="parseLabel">Parsing DNA file...</div>
+                    <div class="parse-bar">
+                        <div class="parse-bar-fill" id="parseBarFill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Provider grid -->
+            <div class="providers-grid">
+                <div class="provider-item"><div class="prov-icon">23</div><span>23andMe</span></div>
+                <div class="provider-item"><div class="prov-icon">A</div><span>AncestryDNA</span></div>
+                <div class="provider-item"><div class="prov-icon">MH</div><span>MyHeritage</span></div>
+                <div class="provider-item"><div class="prov-icon">FT</div><span>FTDNA</span></div>
+                <div class="provider-item"><div class="prov-icon">L</div><span>LivingDNA</span></div>
+                <div class="provider-item"><div class="prov-icon">&#x1F4C4;</div><span>Raw Files</span></div>
+            </div>
+
+            <div class="privacy-strip">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                <span>Your DNA file is analyzed entirely in your browser. Nothing is uploaded or stored.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phenotype Panel -->
+    <section class="panel" id="panelPhenotype" style="display:none;">
+        <div class="container">
+            <!-- Genetic character panel (built by phenotype.js) -->
+            <div id="phenotypeCharacter"></div>
+
+            <!-- Detailed trait sections -->
+            <div id="traitSections"></div>
+
+            <!-- Disclaimer -->
+            <div class="disclaimer">
+                <strong>Scientific disclaimer:</strong> Predictions are based on published GWAS and forensic genetics models (HIrisPlex-S). Eye/hair color have high accuracy (75–90%+). Complex polygenic traits (height, build) are estimated from limited high-effect SNPs and represent tendencies, not certainties. Actual phenotype depends on epistatic interactions, environment, and untested variants. For educational purposes only.
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Panel -->
+    <section class="panel" id="panelHealth" style="display:none;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Genetics &amp; Health Report</h2>
+                <p>Haplogroups, Neanderthal ancestry, metabolism, cardiovascular, autoimmune, mental health, pharmacogenomics, carrier status, disease risk, and 200+ SNP markers</p>
+            </div>
+            <div id="healthSections"></div>
+        </div>
+    </section>
+
+    <!-- Libraries -->
+    <script src="/js/jszip.min.js"></script>
+
+    <!-- App Modules (order matters) -->
+    <script src="/js/snp-database.js"></script>
+    <script src="/js/categories.js"></script>
+    <script src="/js/parser.js"></script>
+    <script src="/js/face-generator.js"></script>
+    <script src="/js/phenotype.js"></script>
+    <script src="/js/ancestry.js"></script>
+    <script src="/js/haplogroups.js"></script>
+    <script src="/js/health.js"></script>
+    <script src="/js/pharmacogenomics.js"></script>
+    <script src="/js/carrier-status.js"></script>
+    <script src="/js/disease-risk.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>

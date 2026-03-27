@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA Suite — Debug Console</title>
+    <style>
+        body { font-family: monospace; background: #0a0a14; color: #e0e0e0; padding: 20px; line-height: 1.6; }
+        h1 { color: #8B5CF6; margin-bottom: 20px; }
+        .section { margin: 20px 0; padding: 15px; background: #111122; border: 1px solid #333355; border-radius: 8px; }
+        .section h2 { color: #10B981; margin-top: 0; }
+        .good { color: #10B981; font-weight: bold; }
+        .bad { color: #EF4444; font-weight: bold; }
+        .warn { color: #F59E0B; }
+        .code { background: #0B0B14; padding: 10px; border-left: 3px solid #6C3AED; margin: 10px 0; font-size: 0.9em; word-break: break-all; }
+        button { background: #6C3AED; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px 0; }
+        button:hover { background: #8B5CF6; }
+        #output { margin-top: 10px; max-height: 500px; overflow-y: auto; }
+        .log-line { padding: 4px 0; }
+    </style>
+</head>
+<body>
+    <h1>🧬 DNA Suite — Detailed Debug Console</h1>
+
+    <div class="section">
+        <h2>Step 1: Check Network Downloads</h2>
+        <button onclick="checkNetwork()">Test All Script Downloads</button>
+        <div id="networkOutput"></div>
+    </div>
+
+    <div class="section">
+        <h2>Step 2: Load Scripts Sequentially & Check Each</h2>
+        <button onclick="testScriptSequential()">Test Script Loading Order</button>
+        <div id="output"></div>
+    </div>
+
+    <div class="section">
+        <h2>Step 3: Check What's Available After Loading</h2>
+        <button onclick="checkGlobals()">Check Global Variables</button>
+        <div id="globalsOutput"></div>
+    </div>
+
+    <script>
+        function log(msg, type = 'normal') {
+            const output = document.getElementById('output');
+            const line = document.createElement('div');
+            line.className = 'log-line';
+
+            if (type === 'good') line.innerHTML = '<span class="good">✓ ' + msg + '</span>';
+            else if (type === 'bad') line.innerHTML = '<span class="bad">✗ ' + msg + '</span>';
+            else if (type === 'warn') line.innerHTML = '<span class="warn">⚠ ' + msg + '</span>';
+            else line.innerHTML = msg;
+
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function checkNetwork() {
+            const out = document.getElementById('networkOutput');
+            out.innerHTML = '<div class="warn">Checking network...</div>';
+
+            const scripts = [
+                '/js/jszip.min.js',
+                '/js/snp-database.js',
+                '/js/categories.js',
+                '/js/parser.js',
+                '/js/face-generator.js',
+                '/js/phenotype.js',
+                '/js/ancestry.js',
+                '/js/haplogroups.js',
+                '/js/health.js',
+                '/js/pharmacogenomics.js',
+                '/js/carrier-status.js',
+                '/js/disease-risk.js',
+                '/app.js',
+            ];
+
+            Promise.all(scripts.map(url =>
+                fetch(url)
+                    .then(r => r.text().then(text => ({
+                        url,
+                        ok: r.ok,
+                        status: r.status,
+                        size: text.length,
+                        preview: text.substring(0, 100)
+                    })))
+                    .catch(e => ({ url, ok: false, error: e.message }))
+            )).then(results => {
+                out.innerHTML = '';
+                results.forEach(r => {
+                    const div = document.createElement('div');
+                    if (r.ok) {
+                        div.innerHTML = '<span class="good">✓</span> ' + r.url + ' <span class="code">[' + r.status + ' OK, ' + r.size + ' bytes]</span>';
+                    } else {
+                        div.innerHTML = '<span class="bad">✗</span> ' + r.url + ' <span class="bad">[' + (r.error || r.status) + ']</span>';
+                    }
+                    out.appendChild(div);
+                });
+            });
+        }
+
+        function testScriptSequential() {
+            document.getElementById('output').innerHTML = '';
+            log('Testing script loading sequence...', 'warn');
+
+            // Clear any previous globals
+            log('Step 1: Loading JSZip...');
+            const scriptTests = [
+                { url: '/js/jszip.min.js', checkVar: 'JSZip' },
+                { url: '/js/snp-database.js', checkVar: 'SNP_DB' },
+                { url: '/js/categories.js', checkVar: 'CATEGORIES' },
+                { url: '/js/parser.js', checkVar: 'parseDNA' },
+                { url: '/js/face-generator.js', checkVar: 'generateFaceCanvas' },
+                { url: '/js/phenotype.js', checkVar: 'buildPhenotypeReport' },
+                { url: '/js/ancestry.js', checkVar: 'buildAncestryReport' },
+                { url: '/js/haplogroups.js', checkVar: 'buildHaplotypSection' },
+                { url: '/js/health.js', checkVar: 'buildHealthReport' },
+                { url: '/js/pharmacogenomics.js', checkVar: 'buildPharmacoHTML' },
+                { url: '/js/carrier-status.js', checkVar: 'buildCarrierReport' },
+                { url: '/js/disease-risk.js', checkVar: 'buildDiseaseRiskReport' },
+            ];
+
+            let loadedCount = 0;
+            let errorCount = 0;
+
+            scriptTests.reduce((promise, test) => {
+                return promise.then(() => {
+                    return fetch(test.url)
+                        .then(r => {
+                            if (!r.ok) {
+                                log('Failed to download ' + test.url + ' [' + r.status + ']', 'bad');
+                                errorCount++;
+                                return;
+                            }
+                            return r.text().then(code => {
+                                log('Downloaded ' + test.url + ' (' + code.length + ' bytes)', 'good');
+
+                                // Try to execute it
+                                try {
+                                    eval(code);
+                                    const exists = typeof eval('typeof ' + test.checkVar) !== 'undefined';
+                                    if (exists) {
+                                        log('  → Variable "' + test.checkVar + '" is now defined', 'good');
+                                        loadedCount++;
+                                    } else {
+                                        log('  → WARNING: Variable "' + test.checkVar + '" still undefined!', 'warn');
+                                    }
+                                } catch (e) {
+                                    log('  → PARSE ERROR in ' + test.url + ': ' + e.message, 'bad');
+                                    errorCount++;
+                                }
+                            });
+                        })
+                        .catch(e => {
+                            log('Network error loading ' + test.url + ': ' + e.message, 'bad');
+                            errorCount++;
+                        });
+                });
+            }, Promise.resolve()).then(() => {
+                log('', 'normal');
+                log('Summary: ' + loadedCount + ' loaded, ' + errorCount + ' errors', errorCount > 0 ? 'bad' : 'good');
+            });
+        }
+
+        function checkGlobals() {
+            const out = document.getElementById('globalsOutput');
+            out.innerHTML = '';
+
+            const checks = [
+                ['SNP_DB', typeof SNP_DB !== 'undefined', SNP_DB ? Object.keys(SNP_DB).length + ' SNPs' : 'N/A'],
+                ['CATEGORIES', typeof CATEGORIES !== 'undefined', CATEGORIES ? Object.keys(CATEGORIES).length + ' categories' : 'N/A'],
+                ['parseDNA', typeof parseDNA !== 'undefined'],
+                ['buildPhenotypeReport', typeof buildPhenotypeReport !== 'undefined'],
+                ['buildAncestryReport', typeof buildAncestryReport !== 'undefined'],
+                ['buildHealthReport', typeof buildHealthReport !== 'undefined'],
+                ['buildPharmacoHTML', typeof buildPharmacoHTML !== 'undefined'],
+                ['buildCarrierReport', typeof buildCarrierReport !== 'undefined'],
+                ['buildDiseaseRiskReport', typeof buildDiseaseRiskReport !== 'undefined'],
+                ['JSZip', typeof JSZip !== 'undefined'],
+            ];
+
+            checks.forEach(([name, exists, detail]) => {
+                const div = document.createElement('div');
+                div.className = exists ? 'good' : 'bad';
+                div.textContent = (exists ? '✓' : '✗') + ' ' + name + (detail ? ' (' + detail + ')' : '');
+                out.appendChild(div);
+            });
+        }
+
+        // Auto-check network on load
+        window.addEventListener('load', () => {
+            console.log('Debug page loaded');
+            checkGlobals();
+        });
+    </script>
+</body>
+</html>
