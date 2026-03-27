@@ -58,8 +58,9 @@ Any standard SNP file format is supported.
 # 1. Clone the repo
 git clone https://github.com/BrandonDoesCoding/dna-analysis-suite.git
 
-# 2. Open in your browser
-open index.html
+# 2. Install & Run
+npm i
+node run.js
 ```
 
 That's it. Drag and drop your DNA file to get started.
