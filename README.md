@@ -85,19 +85,6 @@ No frameworks. No backend. No data ever transmitted.
 
 ---
 
-## 📁 Project Structure
-
-```
-dna-analysis-suite/
-├── index.html        # Main UI — upload, phenotype & health panels
-├── styles.css        # Design system & responsive layout
-├── app.js            # File handling, parsing & tab navigation
-├── run.js            # SNP analysis engine & report generation
-├── js/               # Supporting modules
-└── debug.html        # Developer debug view
-```
-
----
 
 ## 🔒 Privacy First
 
@@ -112,19 +99,6 @@ This tool was designed with **privacy as the foundation**, not an afterthought.
 | ✅ | Fully open source — read every line |
 
 > **Your genetic data is yours. It never leaves your machine.**
-
----
-
-## 🛠️ Built With
-
-| Technology | Role |
-|---|---|
-| HTML5 | Structure & semantic markup |
-| CSS3 | Custom design system, animations, responsive layout |
-| Vanilla JavaScript | Zero-dependency analysis engine |
-| Google Fonts (Inter) | Typography |
-
----
 
 ## 📄 License
 
