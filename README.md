@@ -1,102 +1,140 @@
+<div align="center">
+
 # 🧬 DNA Analysis Suite
 
-> Phenotype predictions, haplogroup detection, and genetic health insights — 100% in your browser. Your DNA never leaves your device.
+**Phenotype predictions · Haplogroup detection · Genetic health insights**
+
+*Your DNA never leaves your browser — ever.*
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![No Server](https://img.shields.io/badge/Server-None-brightgreen)](https://github.com/BrandonDoesCoding/dna-analysis-suite)
+[![Client Side](https://img.shields.io/badge/Processing-100%25%20Client--Side-success)](https://github.com/BrandonDoesCoding/dna-analysis-suite)
+[![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-orange)](https://github.com/BrandonDoesCoding/dna-analysis-suite)
+
+</div>
+
+---
+
+## 🔬 What Is This?
+
+**DNA Analysis Suite** is a free, open-source web tool that analyzes your raw DNA file entirely inside your browser. Upload a file from any major provider and instantly get:
+
+- 🧬 **Phenotype predictions** — eye color, hair, skin tone, and more
+- 🌍 **Haplogroup detection** — trace your maternal & paternal ancestry
+- 💊 **Genetic health screening** — 200+ SNPs checked for health-related variants
+
+Zero accounts. Zero uploads. Zero tracking. Just answers.
 
 ---
 
 ## ✨ Features
 
-| Feature | Description |
-|---|---|
-| 🔬 **Phenotype Report** | Predict physical traits (eye color, hair, skin tone, and more) from your SNPs |
-| 🌍 **Haplogroup Detection** | Identify your maternal & paternal lineage haplogroups |
-| 💊 **Genetic Health Analysis** | Screen 200+ SNPs linked to health traits and carrier status |
-| 🔒 **100% Private** | Fully client-side — no uploads, no servers, no tracking |
-| 📦 **Multi-Provider Support** | Works with `.zip`, `.txt`, `.csv`, `.raw`, `.tsv`, `.gz` files |
+| | Feature | Details |
+|---|---|---|
+| 🔬 | **Phenotype Report** | Physical trait predictions from your SNP data |
+| 🌍 | **Haplogroup Detection** | Maternal (mtDNA) & paternal (Y-DNA) lineage |
+| 💊 | **Genetic Health Analysis** | 200+ health-linked SNPs screened |
+| 🔒 | **100% Private** | No uploads, no servers, no storage |
+| 📦 | **Multi-Format Support** | `.zip` `.txt` `.csv` `.raw` `.tsv` `.gz` |
+| ⚡ | **No Install Required** | Open `index.html` and you're done |
 
 ---
 
 ## 🧪 Supported DNA Providers
 
-- 23andMe
-- AncestryDNA
-- MyHeritage
-- FamilyTreeDNA
-- LivingDNA
-- And more — any raw SNP file in standard format
+Works with raw exports from all major providers:
+
+> 23andMe &nbsp;·&nbsp; AncestryDNA &nbsp;·&nbsp; MyHeritage &nbsp;·&nbsp; FamilyTreeDNA &nbsp;·&nbsp; LivingDNA &nbsp;·&nbsp; and more
+
+Any standard SNP file format is supported.
 
 ---
 
 ## 🚀 Getting Started
 
-No installation required. Just open the file in your browser.
+**No installation. No setup. No dependencies.**
 
 ```bash
-# Clone the repo
-git clone https://github.com/YOUR_USERNAME/dna-analysis-suite.git
+# 1. Clone the repo
+git clone https://github.com/BrandonDoesCoding/dna-analysis-suite.git
 
-# Open in browser
-open Website/index.html
+# 2. Open in your browser
+open index.html
 ```
 
-Or simply **[download the latest release](#)** and double-click `index.html`.
+That's it. Drag and drop your DNA file to get started.
 
 ---
 
 ## 🖥️ How It Works
 
 ```
-1. Upload your raw DNA file  →  drag & drop or click to browse
-2. File is parsed locally    →  zero network requests made
-3. SNPs are analyzed         →  matched against built-in variant database
-4. Reports are generated     →  Phenotype, Haplogroup, Health tabs
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│  1. Upload   →  Drag & drop or browse for your file     │
+│  2. Parse    →  File read locally, zero network calls   │
+│  3. Analyze  →  SNPs matched against variant database   │
+│  4. Report   →  Phenotype, Haplogroup & Health tabs     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-All processing happens inside your browser using vanilla JavaScript. No frameworks, no dependencies, no data ever sent anywhere.
+All processing runs inside your browser using pure JavaScript.
+No frameworks. No backend. No data ever transmitted.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-Website/
-├── index.html      # Main UI — upload, phenotype, health panels
-├── styles.css      # Full design system & responsive layout
-├── app.js          # File handling, parsing, tab navigation
-├── run.js          # SNP analysis engine & report generation
-├── js/             # Additional modules
-└── debug.html      # Developer debug view
+dna-analysis-suite/
+├── index.html        # Main UI — upload, phenotype & health panels
+├── styles.css        # Design system & responsive layout
+├── app.js            # File handling, parsing & tab navigation
+├── run.js            # SNP analysis engine & report generation
+├── js/               # Supporting modules
+└── debug.html        # Developer debug view
 ```
 
 ---
 
-## 🔒 Privacy
+## 🔒 Privacy First
 
-This app was built with privacy as the **#1 priority**.
+This tool was designed with **privacy as the foundation**, not an afterthought.
 
-- ✅ No account required
-- ✅ No data sent to any server
-- ✅ No cookies, no analytics, no tracking
-- ✅ Works fully offline after loading
-- ✅ Open source — audit the code yourself
+| | |
+|---|---|
+| ✅ | No account or sign-up required |
+| ✅ | No data sent to any server |
+| ✅ | No cookies, analytics, or tracking |
+| ✅ | Works fully offline after first load |
+| ✅ | Fully open source — read every line |
 
-Your genetic data is yours. It stays on your machine.
+> **Your genetic data is yours. It never leaves your machine.**
 
 ---
 
 ## 🛠️ Built With
 
-- **HTML5** — semantic structure
-- **CSS3** — custom design system, responsive layout
-- **Vanilla JavaScript** — zero dependencies, fast & lightweight
-- **Google Fonts** — Inter typeface
+| Technology | Role |
+|---|---|
+| HTML5 | Structure & semantic markup |
+| CSS3 | Custom design system, animations, responsive layout |
+| Vanilla JavaScript | Zero-dependency analysis engine |
+| Google Fonts (Inter) | Typography |
 
 ---
 
 ## 📄 License
 
-MIT License — free to use, modify, and distribute.
+Released under the [MIT License](LICENSE) — free to use, fork, and build on.
 
 ---
 
-<p align="center">Made with ❤️ for privacy-conscious DNA explorers</p>
+<div align="center">
+
+Made with ❤️ for privacy-conscious DNA explorers
+
+**[⭐ Star this repo](https://github.com/BrandonDoesCoding/dna-analysis-suite)** if you find it useful!
+
+</div>
