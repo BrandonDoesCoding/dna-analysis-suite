@@ -106,7 +106,8 @@ async function handleFile(file) {
     const healthContainer = $('healthSections');
     if (healthContainer) {
         buildHealthReport(parsedSNPs);
-        const extraHTML = buildPharmacoHTML(parsedSNPs)
+        const extraHTML = buildPSLScore(parsedSNPs)
+            + buildPharmacoHTML(parsedSNPs)
             + buildCarrierReport(parsedSNPs)
             + buildDiseaseRiskReport(parsedSNPs);
         healthContainer.insertAdjacentHTML('beforeend', extraHTML);

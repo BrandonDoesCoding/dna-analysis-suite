@@ -629,6 +629,154 @@ body::after {
 .profile-info h2 { font-size:1.3rem; font-weight:800; color:var(--txw); margin-bottom:4px; }
 .profile-meta { font-size:0.9rem; color:var(--tx2); }
 
+/* === PSL Score Card === */
+.psl-card {
+    background: var(--surface); border: 1px solid var(--bdr); border-radius: var(--r3);
+    padding: 32px; margin-bottom: 16px; position: relative; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+.psl-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, transparent 5%, #EF4444, #F59E0B, #10B981, #6366F1, #A855F7, transparent 95%);
+}
+.psl-header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+.psl-header-left { display:flex; align-items:center; gap:14px; }
+.psl-header-icon { font-size:2rem; filter:drop-shadow(0 0 12px rgba(168,85,247,0.5)); }
+.psl-header-title { font-size:1.15rem; font-weight:900; color:var(--txw); letter-spacing:-0.03em; }
+.psl-exp-badge {
+    font-size:0.62rem; font-weight:700; padding:2px 8px; border-radius:100px;
+    background:rgba(245,158,11,0.1); color:var(--amber); border:1px solid rgba(245,158,11,0.25);
+    vertical-align:middle; margin-left:8px; letter-spacing:0.04em;
+}
+.psl-header-sub { font-size:0.78rem; color:var(--tx3); margin-top:3px; }
+.psl-tier-badge {
+    padding:8px 20px; border-radius:100px; font-size:0.82rem; font-weight:800;
+    color:var(--tc, #8B5CF6);
+    background:color-mix(in srgb, var(--tc, #8B5CF6) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--tc, #8B5CF6) 30%, transparent);
+    white-space:nowrap; box-shadow:0 0 20px color-mix(in srgb, var(--tc, #8B5CF6) 15%, transparent);
+}
+.psl-main-row { display:flex; align-items:center; gap:28px; margin-bottom:28px; flex-wrap:wrap; }
+.psl-score-display { display:flex; align-items:baseline; gap:8px; flex-shrink:0; }
+.psl-big-num { font-size:5.5rem; font-weight:900; line-height:1; letter-spacing:-0.06em; }
+.psl-score-label { font-size:1.2rem; font-weight:700; color:var(--tx3); }
+.psl-main-meta { display:flex; flex-direction:column; gap:6px; }
+.psl-tier-name { font-size:1.3rem; font-weight:900; letter-spacing:-0.03em; }
+.psl-percentile { font-size:0.88rem; font-weight:700; color:var(--tx2); }
+.psl-desc { font-size:0.82rem; color:var(--tx3); }
+.psl-delta { font-size:0.8rem; color:var(--tx3); margin-top:4px; }
+.psl-delta strong { font-size:0.9rem; }
+
+/* PSL Gauge */
+.psl-gauge-wrap { margin-bottom:32px; }
+.psl-gauge-labels {
+    display:flex; justify-content:space-between; font-size:0.62rem; color:var(--tx3);
+    font-weight:600; margin-bottom:8px; text-align:center;
+}
+.psl-gauge-labels span { flex:1; line-height:1.4; }
+.psl-gauge-track {
+    height:16px; background:var(--bg3); border-radius:100px; position:relative;
+    border:1px solid var(--bdr); box-shadow:inset 0 2px 4px rgba(0,0,0,0.4); overflow:visible;
+}
+.psl-gauge-fill { height:100%; border-radius:100px; transition:width 1.2s cubic-bezier(0.22,1,0.36,1); }
+.psl-gauge-thumb {
+    position:absolute; top:-4px; width:16px; height:24px;
+    background:#fff; border-radius:5px; border:2px solid;
+    box-shadow:0 2px 10px rgba(0,0,0,0.5);
+    transition:left 1.2s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* Category bars */
+.psl-cats-title { font-size:0.72rem; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px; }
+.psl-cats-grid { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+.psl-cat-row { display:flex; align-items:center; gap:12px; }
+.psl-cat-meta { display:flex; align-items:center; gap:6px; width:200px; flex-shrink:0; }
+.psl-cat-icon { font-size:0.95rem; }
+.psl-cat-name { font-size:0.78rem; font-weight:600; color:var(--tx2); flex:1; }
+.psl-cat-count { font-size:0.65rem; color:var(--tx3); white-space:nowrap; }
+.psl-cat-bar-wrap { flex:1; height:10px; background:var(--bg3); border-radius:100px; position:relative; overflow:hidden; }
+.psl-cat-bar { height:100%; border-radius:100px; min-width:2px; transition:width 1s ease; }
+.psl-midline { position:absolute; top:0; left:50%; width:1px; height:100%; background:var(--bdr2); }
+.psl-cat-val { width:42px; text-align:right; font-size:0.75rem; font-weight:700; font-variant-numeric:tabular-nums; flex-shrink:0; }
+
+/* Detail section */
+.psl-details-wrap { margin-bottom:24px; }
+.psl-details-toggle {
+    font-size:0.82rem; font-weight:700; color:var(--pri-l); cursor:pointer;
+    padding:12px 16px; background:rgba(108,58,237,0.05); border-radius:var(--r);
+    border:1px solid rgba(108,58,237,0.1); list-style:none; transition:all 0.2s;
+    display:flex; align-items:center; gap:8px;
+}
+.psl-details-toggle:hover { background:rgba(108,58,237,0.1); }
+.psl-details-body { padding-top:12px; display:flex; flex-direction:column; gap:16px; }
+.psl-detail-group { }
+.psl-detail-group-hdr { font-size:0.7rem; font-weight:800; color:var(--pri-l); text-transform:uppercase; letter-spacing:0.1em; padding:10px 4px 6px; border-bottom:1px solid var(--bdr); margin-bottom:8px; }
+.psl-item-row { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:var(--r); border:1px solid var(--bdr); margin-bottom:5px; transition:all 0.2s; }
+.psl-item-row:hover { border-color:var(--bdr2); transform:translateX(2px); }
+.psl-item-pos { background:rgba(16,185,129,0.03); border-left:3px solid rgba(16,185,129,0.4); }
+.psl-item-neg { background:rgba(239,68,68,0.03); border-left:3px solid rgba(239,68,68,0.4); }
+.psl-item-neu { background:rgba(255,255,255,0.02); border-left:3px solid rgba(148,163,184,0.2); }
+.psl-item-icon { font-size:0.85rem; flex-shrink:0; padding-top:1px; }
+.psl-item-info { flex:1; display:flex; flex-direction:column; gap:2px; }
+.psl-item-label { font-size:0.8rem; font-weight:700; color:var(--txw); }
+.psl-item-note { font-size:0.73rem; color:var(--tx3); line-height:1.5; }
+.psl-item-val { font-size:0.78rem; font-weight:800; font-variant-numeric:tabular-nums; flex-shrink:0; color:var(--tx2); }
+
+/* Tier Identifiers */
+.psl-identifiers { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px; }
+.psl-ident-traits, .psl-ident-examples {
+    background:var(--bg); border:1px solid var(--bdr); border-radius:var(--r2); padding:18px;
+}
+.psl-ident-title { font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:12px; }
+.psl-trait-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+.psl-trait-list li { font-size:0.78rem; color:var(--tx2); display:flex; align-items:flex-start; gap:8px; line-height:1.4; }
+.psl-trait-list li::before { content:'→'; color:var(--pri-l); font-weight:700; flex-shrink:0; }
+.psl-examples-text { font-size:0.8rem; color:var(--tx2); line-height:1.8; }
+.psl-smv-badge {
+    display:inline-block; padding:4px 14px; border-radius:100px; font-size:0.75rem; font-weight:700;
+    color:var(--tc, #8B5CF6);
+    background:color-mix(in srgb, var(--tc, #8B5CF6) 10%, transparent);
+    border:1px solid color-mix(in srgb, var(--tc, #8B5CF6) 25%, transparent);
+    margin-bottom:8px;
+}
+
+/* Guide — full scale rows */
+.psl-guide { background:var(--bg); border:1px solid var(--bdr); border-radius:var(--r2); padding:20px; margin-bottom:20px; }
+.psl-guide-title { font-size:0.72rem; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px; }
+.psl-guide-grid-full { display:flex; flex-direction:column; gap:6px; }
+.psl-guide-row {
+    display:flex; align-items:flex-start; gap:16px; padding:14px 16px;
+    background:color-mix(in srgb, var(--gc, #333) 8%, var(--bg3));
+    border:1px solid color-mix(in srgb, var(--gc, #333) 20%, var(--bdr));
+    border-radius:var(--r); transition:all 0.2s;
+}
+.psl-guide-row:hover { border-color:color-mix(in srgb, var(--gc, #333) 40%, transparent); transform:translateX(3px); }
+.psl-guide-score {
+    font-size:2rem; font-weight:900; width:36px; text-align:center; flex-shrink:0;
+    line-height:1; padding-top:2px;
+    background:linear-gradient(135deg, color-mix(in srgb, var(--gc, #333) 100%, white 20%), color-mix(in srgb, var(--gc, #333) 60%, white 40%));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.psl-guide-body { flex:1; }
+.psl-guide-tier { font-size:0.88rem; font-weight:800; margin-bottom:4px; letter-spacing:-0.01em; }
+.psl-guide-pct { font-size:0.72rem; color:var(--tx3); font-weight:600; margin-bottom:6px; }
+.psl-guide-idents { font-size:0.73rem; color:var(--tx2); line-height:1.7; margin-bottom:4px; }
+.psl-guide-ex { font-size:0.7rem; color:var(--tx3); font-style:italic; }
+
+@media(max-width:768px) {
+    .psl-big-num { font-size:3.8rem; }
+    .psl-identifiers { grid-template-columns:1fr; }
+    .psl-cat-meta { width:140px; }
+    .psl-gauge-labels { font-size:0.52rem; }
+    .psl-card { padding:22px; }
+    .psl-guide-score { font-size:1.5rem; width:28px; }
+}
+@media(max-width:480px) {
+    .psl-main-row { gap:16px; }
+    .psl-cat-meta { width:120px; }
+    .psl-gauge-labels { font-size:0.46rem; }
+}
+
 /* === Life Expectancy Card === */
 .le-card {
     background: var(--surface);
@@ -718,8 +866,15 @@ body::after {
 .le-factor-icon { font-size: 1rem; flex-shrink: 0; padding-top: 1px; }
 .le-factor-info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
 .le-factor-label { font-size: 0.82rem; font-weight: 700; color: var(--txw); }
+.le-factor-gene { font-size: 0.7rem; font-weight: 500; color: var(--tx3); font-family: 'SF Mono','Fira Code',monospace; margin-left: 6px; }
 .le-factor-note { font-size: 0.75rem; color: var(--tx3); line-height: 1.5; }
 .le-no-data { font-size: 0.85rem; color: var(--tx3); padding: 16px; text-align: center; }
+.le-group-header {
+    font-size: 0.7rem; font-weight: 800; color: var(--pri-l);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 14px 4px 6px; border-bottom: 1px solid var(--bdr);
+    margin-bottom: 8px; margin-top: 4px;
+}
 
 /* Lifestyle boost box */
 .le-lifestyle-box {
