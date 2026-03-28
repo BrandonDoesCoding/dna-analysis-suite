@@ -5,6 +5,7 @@
 function buildDiseaseRiskReport(parsedSNPs) {
     let html = '';
 
+    html += buildLifeExpectancyEstimate(parsedSNPs);
     html += buildCardiovascularRisk(parsedSNPs);
     html += buildMetabolicRisk(parsedSNPs);
     html += buildNeuroDegenerative(parsedSNPs);
@@ -22,6 +23,176 @@ function buildDiseaseRiskReport(parsedSNPs) {
     </div>`;
 
     return html;
+}
+
+// =============================================
+// LIFE EXPECTANCY ESTIMATE
+// =============================================
+function buildLifeExpectancyEstimate(parsedSNPs) {
+    // Base: US average life expectancy
+    let base = 79;
+    let delta = 0;
+    const factors = [];
+
+    // --- FOXO3 longevity gene (rs2802292) ---
+    const foxo3 = parsedSNPs['rs2802292'];
+    if (foxo3 === 'GG') {
+        delta += 3;
+        factors.push({ icon: '✅', label: 'FOXO3 (rs2802292)', val: '+3 yrs', note: 'GG genotype — strongest replicated longevity locus. Associated with centenarian lifespan.', color: 'green' });
+    } else if (foxo3 === 'GT' || foxo3 === 'TG') {
+        delta += 1.5;
+        factors.push({ icon: '✅', label: 'FOXO3 (rs2802292)', val: '+1.5 yrs', note: 'GT genotype — partial longevity benefit.', color: 'green' });
+    } else if (foxo3) {
+        factors.push({ icon: '➖', label: 'FOXO3 (rs2802292)', val: '±0 yrs', note: 'TT genotype — no longevity allele.', color: 'neutral' });
+    }
+
+    // --- APOE status (rs429358 + rs7412) ---
+    const apoe4 = parsedSNPs['rs429358'];
+    const apoe2 = parsedSNPs['rs7412'];
+    if (apoe4 === 'CC') {
+        delta -= 5;
+        factors.push({ icon: '⚠️', label: 'APOE ε4/ε4 (rs429358)', val: '−5 yrs', note: 'Homozygous ε4 — highest AD & cardiovascular risk genotype. Strongly modifiable via lifestyle.', color: 'red' });
+    } else if (apoe4 === 'CT' || apoe4 === 'TC') {
+        delta -= 2;
+        factors.push({ icon: '🔶', label: 'APOE ε3/ε4 (rs429358)', val: '−2 yrs', note: 'One ε4 allele. Moderate AD/CVD risk. Lifestyle can substantially offset this.', color: 'amber' });
+    } else if (apoe2 === 'TT') {
+        delta += 2;
+        factors.push({ icon: '✅', label: 'APOE ε2/ε2 (rs7412)', val: '+2 yrs', note: 'ε2 is protective — lowest AD risk APOE genotype. Associated with longevity.', color: 'green' });
+    } else if (apoe2 === 'CT' || apoe2 === 'TC') {
+        delta += 1;
+        factors.push({ icon: '✅', label: 'APOE ε2/ε3 (rs7412)', val: '+1 yr', note: 'Partial ε2 protection. Slightly lower AD & cardiovascular risk.', color: 'green' });
+    }
+
+    // --- Cardiovascular: CDKN2B (rs1333049) ---
+    const cad = parsedSNPs['rs1333049'];
+    if (cad === 'GG') {
+        delta -= 2;
+        factors.push({ icon: '🔶', label: 'CAD Risk (rs1333049)', val: '−2 yrs', note: 'GG genotype at CDKN2B — elevated coronary artery disease risk allele.', color: 'amber' });
+    } else if (cad === 'CG' || cad === 'GC') {
+        delta -= 1;
+        factors.push({ icon: '➖', label: 'CAD Risk (rs1333049)', val: '−1 yr', note: 'Heterozygous CDKN2B. Moderate CAD signal.', color: 'amber' });
+    } else if (cad) {
+        factors.push({ icon: '✅', label: 'CAD Risk (rs1333049)', val: '±0 yrs', note: 'CC genotype — lower CAD risk allele burden.', color: 'green' });
+    }
+
+    // --- T2D: TCF7L2 (rs7903146) ---
+    const t2d = parsedSNPs['rs7903146'];
+    if (t2d === 'TT') {
+        delta -= 2;
+        factors.push({ icon: '🔶', label: 'Diabetes Risk (TCF7L2)', val: '−2 yrs', note: 'TT at TCF7L2 — strongest T2D risk allele. Diet and exercise significantly reduce impact.', color: 'amber' });
+    } else if (t2d === 'CT' || t2d === 'TC') {
+        delta -= 1;
+        factors.push({ icon: '➖', label: 'Diabetes Risk (TCF7L2)', val: '−1 yr', note: 'Heterozygous TCF7L2. Moderate T2D risk.', color: 'amber' });
+    } else if (t2d) {
+        factors.push({ icon: '✅', label: 'Diabetes Risk (TCF7L2)', val: '±0 yrs', note: 'CC genotype — lower TCF7L2 T2D risk.', color: 'green' });
+    }
+
+    // --- Obesity: FTO (rs10757278) ---
+    const fto = parsedSNPs['rs10757278'];
+    if (fto === 'AA') {
+        delta -= 1.5;
+        factors.push({ icon: '🔶', label: 'Obesity Risk (FTO)', val: '−1.5 yrs', note: 'AA at FTO — highest obesity allele burden. ~6-7kg weight tendency above average.', color: 'amber' });
+    } else if (fto === 'GA' || fto === 'AG') {
+        delta -= 0.5;
+        factors.push({ icon: '➖', label: 'Obesity Risk (FTO)', val: '−0.5 yr', note: 'Heterozygous FTO. Mild weight gain tendency.', color: 'neutral' });
+    } else if (fto) {
+        factors.push({ icon: '✅', label: 'Obesity Risk (FTO)', val: '±0 yrs', note: 'GG genotype — no elevated FTO obesity risk.', color: 'green' });
+    }
+
+    // --- CETP / HDL (rs708272) ---
+    const cetp = parsedSNPs['rs708272'];
+    if (cetp === 'AA') {
+        delta += 1;
+        factors.push({ icon: '✅', label: 'HDL Cholesterol (CETP)', val: '+1 yr', note: 'AA at CETP — higher HDL cholesterol tendency. Cardioprotective.', color: 'green' });
+    } else if (cetp === 'AG' || cetp === 'GA') {
+        factors.push({ icon: '➖', label: 'HDL Cholesterol (CETP)', val: '±0 yrs', note: 'Heterozygous CETP. Average HDL effect.', color: 'neutral' });
+    }
+
+    // Final estimate (always shown as a range ±4 years)
+    const est   = Math.round(base + delta);
+    const low   = est - 4;
+    const high  = est + 4;
+    const pct   = Math.min(100, Math.max(0, ((est - 60) / 50) * 100)); // 60–110 scale
+    const genotyped = factors.length;
+
+    // Colour thematic
+    let gaugeColor, outlook, outlookIcon;
+    if (delta >= 3)        { gaugeColor = '#10B981'; outlook = 'Favorable';   outlookIcon = '🌟'; }
+    else if (delta >= 0)   { gaugeColor = '#6C3AED'; outlook = 'Average';     outlookIcon = '✅'; }
+    else if (delta >= -3)  { gaugeColor = '#F59E0B'; outlook = 'Moderate risk'; outlookIcon = '🔶'; }
+    else                   { gaugeColor = '#EF4444'; outlook = 'Elevated risk'; outlookIcon = '⚠️'; }
+
+    const factorRows = factors.length
+        ? factors.map(f => {
+            const chip = f.color === 'green' ? 'conf-high' : f.color === 'red' ? 'conf-low' : f.color === 'amber' ? 'conf-mid' : 'conf-low';
+            return `<div class="le-factor-row">
+                <span class="le-factor-icon">${f.icon}</span>
+                <div class="le-factor-info">
+                    <span class="le-factor-label">${f.label}</span>
+                    <span class="le-factor-note">${f.note}</span>
+                </div>
+                <span class="confidence-badge ${chip}" style="flex-shrink:0">${f.val}</span>
+            </div>`;
+        }).join('')
+        : `<div class="le-no-data">No longevity SNPs detected in your file. Showing population baseline.</div>`;
+
+    return `<div class="le-card fade-in">
+        <!-- Header -->
+        <div class="le-header">
+            <div class="le-header-left">
+                <span class="le-header-icon">⏳</span>
+                <div>
+                    <div class="le-header-title">Genetic Life Expectancy Estimate</div>
+                    <div class="le-header-sub">Polygenic longevity model · ${genotyped} markers scored</div>
+                </div>
+            </div>
+            <div class="le-outlook-badge" style="--oc:${gaugeColor}">${outlookIcon} ${outlook}</div>
+        </div>
+
+        <!-- Estimate display -->
+        <div class="le-estimate-row">
+            <div class="le-big-number" style="color:${gaugeColor}">${est}</div>
+            <div class="le-estimate-meta">
+                <div class="le-estimate-years">years estimated</div>
+                <div class="le-estimate-range">Likely range: <strong>${low}–${high} yrs</strong></div>
+                <div class="le-estimate-base">US baseline: <strong>79 yrs</strong> &nbsp;·&nbsp; Genetic delta: <strong style="color:${gaugeColor}">${delta >= 0 ? '+' : ''}${delta.toFixed(1)} yrs</strong></div>
+            </div>
+        </div>
+
+        <!-- Gauge bar -->
+        <div class="le-gauge-wrap">
+            <div class="le-gauge-labels">
+                <span>60</span><span>70</span><span>80</span><span>90</span><span>100+</span>
+            </div>
+            <div class="le-gauge-track">
+                <div class="le-gauge-fill" style="width:${pct}%; background:${gaugeColor}; box-shadow:0 0 16px ${gaugeColor}60"></div>
+                <div class="le-gauge-marker" style="left:calc(${pct}% - 6px)"></div>
+            </div>
+        </div>
+
+        <!-- Factor breakdown -->
+        <div class="le-factors-title">Genetic Factors Scored</div>
+        <div class="le-factors-list">${factorRows}</div>
+
+        <!-- Lifestyle boost -->
+        <div class="le-lifestyle-box">
+            <div class="le-lifestyle-title">🚀 Lifestyle adds up to +10–14 years on top of genetics</div>
+            <div class="le-lifestyle-grid">
+                <div class="le-lifestyle-item"><span>🏃</span><span>Exercise regularly</span><strong>+3–5 yrs</strong></div>
+                <div class="le-lifestyle-item"><span>🚭</span><span>Never smoking</span><strong>+4–5 yrs</strong></div>
+                <div class="le-lifestyle-item"><span>🥗</span><span>Mediterranean diet</span><strong>+1–3 yrs</strong></div>
+                <div class="le-lifestyle-item"><span>😴</span><span>Quality sleep</span><strong>+1–2 yrs</strong></div>
+                <div class="le-lifestyle-item"><span>🧘</span><span>Stress management</span><strong>+1–2 yrs</strong></div>
+                <div class="le-lifestyle-item"><span>🏥</span><span>Regular checkups</span><strong>+1–2 yrs</strong></div>
+            </div>
+        </div>
+
+        <div class="disclaimer" style="margin-top:0; border-radius:var(--r); font-size:0.76rem;">
+            <strong>⚠️ Important:</strong> This is an <em>educational estimate</em> based on a small number of well-studied SNPs.
+            Genetics account for ~25% of lifespan variation; lifestyle and environment dominate the rest.
+            This is NOT a medical prognosis. Consult a physician for health planning.
+        </div>
+    </div>`;
 }
 
 function buildCardiovascularRisk(parsedSNPs) {
